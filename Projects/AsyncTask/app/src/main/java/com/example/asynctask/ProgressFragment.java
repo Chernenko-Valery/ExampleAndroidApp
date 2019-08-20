@@ -20,14 +20,22 @@ import android.widget.TextView;
 
 public class ProgressFragment extends Fragment {
 
-    private boolean isWork = false;
-    private static final String WORKER_FLAG_TAG = "isWork";
+    private static final String PROGRESS_TAG = "progress";
+
+    ProgressBar progressBar;
+    TextView textView;
+    MyTask mt;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_progress, container, false);
-
+        progressBar = view.findViewById(R.id.progressBar);
+        textView = view.findViewById(R.id.progressText);
+        if(savedInstanceState!=null) {
+            progressBar.setProgress(savedInstanceState.getInt(PROGRESS_TAG));
+            textView.setText("Progress: " + progressBar.getProgress());
+        }
         Button button = view.findViewById(R.id.startButton);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -39,59 +47,50 @@ public class ProgressFragment extends Fragment {
         return view;
     }
 
+
+    public void startTask() {
+        mt = new MyTask();
+        if(progressBar.getProgress() == 100)
+            progressBar.setProgress(0);
+        textView.setText("Progress: " + progressBar.getProgress());
+        mt.execute(progressBar.getProgress());
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(savedInstanceState!=null)
-            isWork = savedInstanceState.getBoolean(WORKER_FLAG_TAG);
+        setRetainInstance(true);
     }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
-        outState.putBoolean(WORKER_FLAG_TAG, isWork);
+        outState.putInt(PROGRESS_TAG, progressBar.getProgress());
         super.onSaveInstanceState(outState);
     }
 
-    public void startTask() {
-        if(!isWork) {
-            ProgressBar progressBar = getView().findViewById(R.id.progressBar);
-            MyTask task = new MyTask();
-            if(progressBar.getProgress() == 100)
-                progressBar.setProgress(0);
-            TextView textView = getView().findViewById(R.id.progressText);
-            textView.setText("Progress: " + progressBar.getProgress());
-            task.execute(progressBar.getProgress());
-        }
-    }
-
-
-
     class MyTask extends AsyncTask<Integer, Integer, Void> {
+
+
 
         @Override
         protected void onPreExecute() {
-            isWork = true;
             super.onPreExecute();
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            isWork = false;
             super.onPostExecute(aVoid);
         }
 
         @Override
         protected void onProgressUpdate(Integer... values) {
-            ProgressBar progressBar = getView().findViewById(R.id.progressBar);
             progressBar.setProgress(values[0]);
-            TextView textView = getView().findViewById(R.id.progressText);
             textView.setText("Progress: " + values[0]);
             super.onProgressUpdate(values);
         }
 
         @Override
         protected void onCancelled() {
-            isWork = false;
             super.onCancelled();
         }
 
