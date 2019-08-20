@@ -1,0 +1,4 @@
+#Tue Aug 20 10:28:26 MSK 2019
+base.0=/home/vchernen/Projects/ExampleAndroidApp/Projects/Service/app/build/intermediates/transforms/dexMerger/debug/3
+path.0=classes.dex
+renamed.0=classes.dex
