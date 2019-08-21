@@ -21,10 +21,12 @@ import android.widget.TextView;
 public class ProgressFragment extends Fragment {
 
     private static final String PROGRESS_TAG = "progress";
+    private static final String FLAG_TAG = "flag";
 
     ProgressBar progressBar;
     TextView textView;
     MyTask mt;
+    boolean isWork = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -35,6 +37,7 @@ public class ProgressFragment extends Fragment {
         if(savedInstanceState!=null) {
             progressBar.setProgress(savedInstanceState.getInt(PROGRESS_TAG));
             textView.setText("Progress: " + progressBar.getProgress());
+            isWork = savedInstanceState.getBoolean(FLAG_TAG);
         }
         Button button = view.findViewById(R.id.startButton);
         button.setOnClickListener(new View.OnClickListener() {
@@ -49,6 +52,8 @@ public class ProgressFragment extends Fragment {
 
 
     public void startTask() {
+        if(isWork)
+            return;
         mt = new MyTask();
         if(progressBar.getProgress() == 100)
             progressBar.setProgress(0);
@@ -65,21 +70,22 @@ public class ProgressFragment extends Fragment {
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putInt(PROGRESS_TAG, progressBar.getProgress());
+        outState.putBoolean(FLAG_TAG, isWork);
         super.onSaveInstanceState(outState);
     }
 
     class MyTask extends AsyncTask<Integer, Integer, Void> {
 
-
-
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            isWork = true;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+            isWork = false;
         }
 
         @Override
@@ -92,6 +98,7 @@ public class ProgressFragment extends Fragment {
         @Override
         protected void onCancelled() {
             super.onCancelled();
+            isWork = false;
         }
 
         @Override
