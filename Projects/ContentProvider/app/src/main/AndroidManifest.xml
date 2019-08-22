@@ -9,6 +9,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <provider
+            android:authorities="com.example.contentprovider"
+            android:name=".PeopleProvider"
+            android:exported="false"/>
         <activity
             android:name=".MainActivity"
             android:label="ContentProvider"

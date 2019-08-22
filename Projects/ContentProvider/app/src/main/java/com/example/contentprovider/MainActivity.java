@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
                 PeopleContract.PeopleEntry.FIRST_NAME,
                 PeopleContract.PeopleEntry.LAST_NAME };
 
-        Cursor cursor = db.query(PeopleContract.PeopleEntry.TABLE_NAME, protection, null, null, null, null, null);
+        Cursor cursor = getContentResolver().query(PeopleContract.CONTENT_URI, protection, null, null, null);
 
         TextView textInfo = findViewById(R.id.textView);
 
@@ -94,6 +94,6 @@ public class MainActivity extends AppCompatActivity {
         ContentValues contentValues = new ContentValues();
         contentValues.put(PeopleContract.PeopleEntry.FIRST_NAME, firstName);
         contentValues.put(PeopleContract.PeopleEntry.LAST_NAME, lastName);
-        db.insert(PeopleContract.PeopleEntry.TABLE_NAME, null, contentValues);
+        getContentResolver().insert(PeopleContract.CONTENT_URI, contentValues);
     }
 }
